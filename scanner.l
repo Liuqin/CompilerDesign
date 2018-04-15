@@ -200,7 +200,14 @@ digits [0-9]
 
 %%
 [ |\t]+	{/*empty*/}
-<COMMENT>[ |\t]+ {/*ignore blanks*/}
+
+"//".* {/*comments*/}
+
+"/*" {BEGIN COMMENT; std::cout << "enter comment mode at line " << total_line_count << std::endl;}
+<COMMENT>"*/" {BEGIN 0; std::cout << "quit comment mode at line " << total_line_count << std::endl;}
+<COMMENT>[^(*/)\n]* {/*ignore comment*/}
+<COMMENT>\n {total_line_count +=1;}
+
 
 fn {handle_token(FN,"fn");}
 let {handle_token(LET_,"let");}
@@ -213,6 +220,7 @@ mut {handle_token(MUT, "mut");}
 	stm.delete_upmost_sybol_tabel();}
 if {handle_token(IF_,"if");}
 while {handle_token(WHILE_,"while");}
+
 {chars}+[{chars}_{digits}]* {handle_token(IDENTIFIER,yytext);
 							node current = node();
 							current.name = yytext;
@@ -220,10 +228,7 @@ while {handle_token(WHILE_,"while");}
 ":"	{handle_token(COLON,":");}
 ";"	{handle_token(SEMI_COLON,";");}
 \".*\"	{handle_token(STRING_, yytext);}
-"//".* {/*comments*/}
-"/*" {BEGIN COMMENT;}
-<COMMENT>\n {total_line_count +=1;}
-"*/" {BEGIN 0;}
+
 \n {total_line_count += 1;}
 
 
