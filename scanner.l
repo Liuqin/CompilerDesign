@@ -15,7 +15,7 @@ const int RESERVED_WORD = 1;
 //const int OPERATOR = 2;
 const int IDENTIFIER = 3;
 const int INT = 4;//here refers to "int", int variables refers to identifier
-
+const int FLOAT = 5;
 const int LEFT_BRACKET = 6;
 const int RIGHT_BRACKET = 7;
 const int LEFT_BRACE = 8;
@@ -28,6 +28,20 @@ const int WHILE_ = 14;
 const int COLON = 15;
 const int SEMI_COLON = 16;
 const int STRING_ = 17;
+const int RETURN_ = 18;
+const int LT = 19;
+const int GT = 20;
+const int LE = 21;
+const int GE = 22;
+const int ASSIGN = 23;
+const int ARROW = 24;
+const int ADD = 25;
+const int MINUS = 26;
+const int MULTIPLE = 27;
+const int DEVIDE = 28;
+const int EQ_ = 29;
+const int COMMA = 30;
+
 
 std::string undefined_name = "UNDEFINED";
 std::string reserved_word_name = "RESERVED_WORD";
@@ -47,6 +61,20 @@ std::string while_name = "WHILE";
 std::string colon_name = "COLON";
 std::string semi_colon_name = "SEMI_COLON";
 std::string string_name = "STRING";
+std::string return_name = "RETURN";
+std::string lt_name = "LOWER_THAN";
+std::string gt_name = "GREATER_THAN";
+std::string le_name = "LOWER_EQUAL";
+std::string ge_name = "GREATER_EQUAL";
+std::string assign_name = "ASSIGN";
+std::string arrow_name = "ARROW";
+std::string add_name = "ADD";
+std::string minus_name = "MINUS";
+std::string multiple_name = "MULTIPLE";
+std::string devide_name = "DEVIDE";
+std::string equal_name = "EQUAL";
+std::string comma_name = "COMMA";
+
 
 void handle_token(int type, std::string name){
 	if(type == IDENTIFIER){
@@ -63,6 +91,12 @@ void handle_token(int type, std::string name){
 	}
 	if(type == RIGHT_BRACE){
 		std::cout << right_brace_name << " " << name << std::endl;
+	}
+	if(type == INT){
+		std::cout << int_name << " " << name << std::endl;
+	}
+	if(type == FLOAT){
+		std::cout << float_name << " " << float_name << std::endl;
 	}
 	if(type == IF_){
 		std::cout << if_name << " " << name << std::endl;
@@ -87,6 +121,45 @@ void handle_token(int type, std::string name){
 	}
 	if(type == STRING_){
 		std::cout << string_name << " " << name << std::endl;
+	}
+	if(type == RETURN_){
+		std::cout << return_name << " " << name << std::endl;
+	}
+	if(type == LT){
+		std::cout << lt_name << " " << name << std::endl;
+	}
+	if(type == GT){
+		std::cout << gt_name << " " << name << std::endl;
+	}
+	if(type == LE){
+		std::cout << le_name << " " << name << std::endl;
+	}
+	if(type == GE){
+		std::cout << ge_name << " " << name << std::endl;
+	}
+	if(type == EQ_){
+		std::cout << equal_name << " " << name << std::endl;
+	}
+	if(type == ASSIGN){
+		std::cout << assign_name << " " << name << std::endl;
+	}
+	if(type == ARROW){
+		std::cout << arrow_name << " " << name << std::endl;
+	}
+	if(type == ADD){
+		std::cout << add_name << " " << name << std::endl;
+	}
+	if(type == MINUS){
+		std::cout << minus_name << " " << name << std::endl;
+	}
+	if(type == MULTIPLE){
+		std::cout << multiple_name << " " << name << std::endl;
+	}
+	if(type == DEVIDE){
+		std::cout << devide_name << " " << name << std::endl;
+	}
+	if(type == COMMA){
+		std::cout << comma_name << " " << name << std::endl;
 	}
 }
 
@@ -206,6 +279,7 @@ digits [0-9]
 "/*" {BEGIN COMMENT; std::cout << "enter comment mode at line " << total_line_count << std::endl;}
 <COMMENT>"*/" {BEGIN 0; std::cout << "quit comment mode at line " << total_line_count << std::endl;}
 <COMMENT>[^(*/)\n]* {/*ignore comment*/}
+<COMMENT>"*" {/*ignore comment*/}
 <COMMENT>\n {total_line_count +=1;}
 
 
@@ -220,6 +294,23 @@ mut {handle_token(MUT, "mut");}
 	stm.delete_upmost_sybol_tabel();}
 if {handle_token(IF_,"if");}
 while {handle_token(WHILE_,"while");}
+return {handle_token(RETURN_,"return");}
+"->"	{handle_token(ARROW,"->");}
+"+"		{handle_token(ADD,"+");}
+"-"		{handle_token(MINUS,"-");}
+"*"		{handle_token(MULTIPLE,"*");}
+"/"		{handle_token(DEVIDE,"/");}
+">="	{handle_token(GE,">=");}
+"<="	{handle_token(LE,"<=");}
+"=="	{handle_token(EQ_,"==");}
+">"	{handle_token(GT,">");}
+"<"	{handle_token(LT,"<");}
+"="	{handle_token(ASSIGN,"=");}
+"," {handle_token(COMMA,",");}
+
+
+{digits}+("."{digits}*)(E{digits}+("."{digits}*)?)?	{handle_token(FLOAT, yytext);}
+{digits}+	{handle_token(INT, yytext);}
 
 {chars}+[{chars}_{digits}]* {handle_token(IDENTIFIER,yytext);
 							node current = node();
